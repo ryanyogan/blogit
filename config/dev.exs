@@ -35,8 +35,7 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :blogit, Blogit.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "ryan",
   database: "blogit_dev",
   hostname: "localhost",
   pool_size: 10
