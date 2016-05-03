@@ -14,16 +14,14 @@ defmodule Blogit.Router do
   end
 
   scope "/", Blogit do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
-    resources "/posts", PostController
-    resources "/users", UserController
+
+    resources "/users", UserController do
+      resources "/posts", PostController
+    end
+
     resources "/sessions", SessionController, only: [:new, :create, :delete]
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", Blogit do
-  #   pipe_through :api
-  # end
 end

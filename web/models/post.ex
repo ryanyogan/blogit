@@ -5,6 +5,8 @@ defmodule Blogit.Post do
     field :title, :string
     field :body, :string
 
+    belongs_to :user, Blogit.User
+
     timestamps
   end
 
