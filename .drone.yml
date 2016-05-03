@@ -1,0 +1,10 @@
+build:
+  image: bitwalker/alpine-elixir-phoenix:2.0
+  commands:
+    - scripts/ci/install_local_dependencies.sh
+    - scripts/ci/execute_tests.sh
+
+cache:
+  mount:
+    - deps
+    - node_modules
