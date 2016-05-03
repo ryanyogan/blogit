@@ -7,7 +7,9 @@ defmodule Blogit.User do
     field :email, :string
     field :password_digest, :string
 
+    # Relationships
     has_many :posts, Blogit.Post
+    belongs_to :role, Blogit.Role
 
     timestamps
 
@@ -16,7 +18,7 @@ defmodule Blogit.User do
     field :password_confirmation, :string, virtual: true
   end
 
-  @required_fields ~w(username email password password_confirmation)
+  @required_fields ~w(username email password password_confirmation role_id)
   @optional_fields ~w()
 
   @doc """
