@@ -17,3 +17,6 @@ config :blogit, Blogit.Repo,
   database: "blogit_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Minimimal effort in crypto for faster tests
+config :comeonin, bcrypt_log_rounds: 4
