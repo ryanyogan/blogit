@@ -1,0 +1,9 @@
+langauge: elixir
+
+elixir:
+  - 1.2.2
+
+script:
+  - mix local.hex --force
+  - mix deps.get
+  - mix test
