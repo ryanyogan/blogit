@@ -1,5 +1,7 @@
 # Blogit
 
+[![Build Status](http://162.243.194.212/api/badges/ryanyogan/blogit/status.svg)](http://162.243.194.212/ryanyogan/blogit)
+
 To start your Phoenix app:
 
   * Install dependencies with `mix deps.get`
