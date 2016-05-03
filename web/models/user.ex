@@ -7,6 +7,8 @@ defmodule Blogit.User do
     field :email, :string
     field :password_digest, :string
 
+    has_many :posts, Blogit.Post
+
     timestamps
 
     # Virtual Fields
