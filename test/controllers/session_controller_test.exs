@@ -1,11 +1,11 @@
 defmodule Blogit.SessionControllerTest do
   use Blogit.ConnCase
-  alias Blogit.User
+  alias Blogit.TestHelper
 
   setup do
-    User.changeset(%User{}, %{username: "test", password: "test",
-                              password_confirmation: "test", email: "test@test.com"})
-    |> Repo.insert
+    {:ok, role} = TestHelper.create_role(%{name: "User", admin: false})
+    {:ok, _user} = TestHelper.create_user(role, %{username: "test", password: "test",
+      password_confirmation: "test", email: "test@test.com"})
     conn = conn()
     {:ok, conn: conn}
   end
