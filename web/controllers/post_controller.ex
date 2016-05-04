@@ -71,6 +71,7 @@ defmodule Blogit.PostController do
     |> redirect(to: user_post_path(conn, :index, conn.assigns[:user]))
   end
 
+
   defp assign_user(conn, _opts) do
     case conn.params do
       %{"user_id" => user_id} ->
@@ -91,7 +92,9 @@ defmodule Blogit.PostController do
 
   defp authorize_user(conn, _opts) do
     user = get_session(conn, :current_user)
-    if user && Integer.to_string(user.id) == conn.params["user_id"] do
+    if user && Integer.to_string(user.id) == conn.params["user_id"] ||
+      Blogit.RoleChecker.is_admin?(user) do
+
       conn
     else
       conn
