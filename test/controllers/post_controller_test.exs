@@ -3,6 +3,7 @@ defmodule Blogit.PostControllerTest do
 
   alias Blogit.Post
   alias Blogit.TestHelper
+  alias Blogit.Factory
 
   @valid_attrs %{body: "some content", title: "some content"}
   @valid_admin_attrs %{email: "admin@test.com", username: "admin", password: "test",
@@ -12,11 +13,10 @@ defmodule Blogit.PostControllerTest do
   @invalid_attrs %{}
 
   setup do
-    {:ok, role} = TestHelper.create_role(%{name: "User Role", admin: false})
-    {:ok, user} = TestHelper.create_user(role,
-      %{email: "test@test.com", username: "testuser",
-        password: "test", password_confirmation: "test"})
-    {:ok, post} = TestHelper.create_post(user, %{title: "Test Post", body: "Test Body"})
+    role = Factory.create(:role)
+    user = Factory.create(:user, role: role)
+    post = Factory.create(:post, user: user)
+
     conn = conn() |> login_user(user)
     {:ok, conn: conn, user: user, role: role, post: post}
   end

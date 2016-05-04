@@ -1,9 +1,10 @@
 defmodule Blogit.SessionControllerTest do
   use Blogit.ConnCase
   alias Blogit.TestHelper
+  alias Blogit.Factory
 
   setup do
-    {:ok, role} = TestHelper.create_role(%{name: "User", admin: false})
+    role = Factory.create(:role)
     {:ok, _user} = TestHelper.create_user(role, %{username: "test", password: "test",
       password_confirmation: "test", email: "test@test.com"})
     conn = conn()

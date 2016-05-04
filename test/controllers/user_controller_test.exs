@@ -3,6 +3,7 @@ defmodule Blogit.UserControllerTest do
 
   alias Blogit.User
   alias Blogit.TestHelper
+  alias Blogit.Factory
 
   @valid_create_attrs %{email: "test@test.com", password: "test1234",
                  password_confirmation: "test1234", username: "testuser"}
@@ -10,15 +11,11 @@ defmodule Blogit.UserControllerTest do
   @invalid_attrs %{}
 
   setup do
-    {:ok, user_role} = TestHelper.create_role(%{name: "user", admin: false})
-    {:ok, nonadmin_user} = TestHelper.create_user(
-      user_role, %{email: "nonadmin@test.com", username: "nonadmin", password: "test",
-      password_confirmation: "test"})
+    user_role = Factory.create(:role)
+    nonadmin_user = Factory.create(:user, role: user_role)
 
-    {:ok, admin_role} = TestHelper.create_role(%{name: "admin", admin: true})
-    {:ok, admin_user} = TestHelper.create_user(
-      admin_role, %{email: "admin@test.com", username: "admin", password: "test",
-      password_confirmation: "test"})
+    admin_role = Factory.create(:role, admin: true)
+    admin_user = Factory.create(:user, role: admin_role)
 
     conn = conn()
     {:ok, conn: conn, admin_role: admin_role, user_role: user_role, nonadmin_user: nonadmin_user,
