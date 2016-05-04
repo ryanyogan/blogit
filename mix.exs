@@ -25,7 +25,7 @@ defmodule Blogit.Mixfile do
   defp app_list(:test), do: [:ex_machina | app_list]
   defp app_list(_), do: app_list
   defp app_list, do: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                      :phoenix_ecto, :postgrex, :comeonin]
+                      :phoenix_ecto, :postgrex, :comeonin, :earmark]
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
@@ -43,7 +43,8 @@ defmodule Blogit.Mixfile do
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 2.1"},
-     {:ex_machina, "~> 0.6"}]
+     {:ex_machina, "~> 0.6"},
+     {:earmark, "~> 0.2.1"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
