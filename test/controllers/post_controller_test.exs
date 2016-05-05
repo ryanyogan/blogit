@@ -2,14 +2,9 @@ defmodule Blogit.PostControllerTest do
   use Blogit.ConnCase
 
   alias Blogit.Post
-  alias Blogit.TestHelper
   alias Blogit.Factory
 
   @valid_attrs %{body: "some content", title: "some content"}
-  @valid_admin_attrs %{email: "admin@test.com", username: "admin", password: "test",
-                       password_confirmation: "test"}
-  @valid_other_user_attrs %{email: "user2@test.com", username: "user2", password: "test",
-                            password_confirmation: "test"}
   @invalid_attrs %{}
 
   setup do
@@ -17,8 +12,13 @@ defmodule Blogit.PostControllerTest do
     user = Factory.create(:user, role: role)
     post = Factory.create(:post, user: user)
 
+    admin_role = Factory.create(:role, admin: true)
+    admin_user = Factory.create(:user, role: admin_role)
+
+    other_user = Factory.create(:user, role: role)
+
     conn = conn() |> login_user(user)
-    {:ok, conn: conn, user: user, role: role, post: post}
+    {:ok, conn: conn, user: user, role: role, post: post, admin: admin_user, other_user: other_user}
   end
 
   test "lists all entries on index", %{conn: conn, user: user} do
@@ -84,12 +84,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "redirects when trying to edit a post for a different user",
-    %{conn: conn, role: role, post: post} do
-    {:ok, other_user} = TestHelper.create_user(role, %{email: "test2@test.com",
-                                                       username: "test2",
-                                                       password: "test",
-                                                       password_confirmation: "test"})
-
+    %{conn: conn, post: post, other_user: other_user} do
     conn = get conn, user_post_path(conn, :edit, other_user, post)
     assert get_flash(conn, :error) == "You are not authorized to modify that post!"
     assert redirected_to(conn) == page_path(conn, :index)
@@ -97,10 +92,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "redirects when trying to update a post for a different user",
-    %{conn: conn, role: role, post: post} do
-
-    {:ok, other_user} = TestHelper.create_user(role,
-      %{email: "test2@test.com", username: "test2", password: "test", password_confirmation: "test"})
+    %{conn: conn, post: post, other_user: other_user} do
     conn = put conn, user_post_path(conn, :update, other_user, post), %{"post" => @valid_attrs}
     assert get_flash(conn, :error) == "You are not authorized to modify that post!"
     assert redirected_to(conn) == page_path(conn, :index)
@@ -108,10 +100,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "redirects when trying to deelete a post for a different user",
-    %{conn: conn, role: role, post: post} do
-
-    {:ok, other_user} = TestHelper.create_user(role,
-      %{email: "test2@test.com", username: "test2", password: "test", password_confirmation: "test"})
+    %{conn: conn, post: post, other_user: other_user} do
     conn = delete conn, user_post_path(conn, :delete, other_user, post)
     assert get_flash(conn, :error) == "You are not authorized to modify that post!"
     assert redirected_to(conn) == page_path(conn, :index)
@@ -119,10 +108,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "renders form for editing chosen resource when logged in as admin",
-    %{conn: conn, user: user, post: post} do
-
-    {:ok, role} = TestHelper.create_role(%{name: "Admin", admin: true})
-    {:ok, admin} = TestHelper.create_user(role, @valid_admin_attrs)
+    %{conn: conn, user: user, post: post, admin: admin} do
     conn =
       login_user(conn, admin)
       |> get(user_post_path(conn, :edit, user, post))
@@ -130,10 +116,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "updates chosen resource and redirects when data is valid when logged in as admin",
-    %{conn: conn, user: user, post: post} do
-
-    {:ok, role} = TestHelper.create_role(%{name: "Admin", admin: true})
-    {:ok, admin} = TestHelper.create_user(role, @valid_admin_attrs)
+    %{conn: conn, user: user, post: post, admin: admin} do
     conn =
       login_user(conn, admin)
       |> put(user_post_path(conn, :update, user, post), post: @valid_attrs)
@@ -142,10 +125,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "does not update chosen resource and redirects when data is invalid when logged in as admin",
-    %{conn: conn, user: user, post: post} do
-
-    {:ok, role} = TestHelper.create_role(%{name: "Admin", admin: true})
-    {:ok, admin} = TestHelper.create_user(role, @valid_admin_attrs)
+    %{conn: conn, user: user, post: post, admin: admin} do
     conn =
       login_user(conn, admin)
       |> put(user_post_path(conn, :update, user, post), post: %{"body" => nil})
@@ -153,10 +133,7 @@ defmodule Blogit.PostControllerTest do
   end
 
   test "deletes chosen resource when logged in as admin",
-    %{conn: conn, user: user, post: post} do
-
-    {:ok, role} = TestHelper.create_role(%{name: "Admin", admin: true})
-    {:ok, admin} = TestHelper.create_user(role, @valid_admin_attrs)
+    %{conn: conn, user: user, post: post, admin: admin} do
     conn =
       login_user(conn, admin)
       |> delete(user_post_path(conn, :delete, user, post))
@@ -164,8 +141,43 @@ defmodule Blogit.PostControllerTest do
     refute Repo.get(Post, post.id)
   end
 
+  test "when logged in as an admin shows chosen resource with author flag",
+    %{conn: conn, user: user, admin: admin} do
+    post = build_post(user)
+    conn = login_user(conn, admin) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    assert conn.assigns[:author_or_admin]
+  end
+
+  test "when logged in as the author, shows chosen resource with author flag",
+    %{conn: conn, user: user} do
+    post = build_post(user)
+    conn = login_user(conn, user) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    assert conn.assigns[:author_or_admin]
+  end
+
+  test "when not logged in, shows chosen resource with author flag set to false",
+  %{conn: conn, user: user} do
+    post = build_post(user)
+    conn = logout_user(conn, user) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    refute conn.assigns[:author_or_admin]
+  end
+
   defp login_user(conn, user) do
     post conn, session_path(conn, :create), user: %{username: user.username,
     password: user.password}
+  end
+
+  defp logout_user(conn, user) do
+    delete conn, session_path(conn, :delete, user)
+  end
+
+  defp build_post(user) do
+    changeset = user
+      |> build_assoc(:posts)
+      |> Post.changeset(@valid_attrs)
+    Repo.insert!(changeset)
   end
 end

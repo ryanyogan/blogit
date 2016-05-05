@@ -5,6 +5,7 @@ defmodule Blogit.Comment do
     field :author, :string
     field :body, :string
     field :approved, :boolean, default: false
+
     belongs_to :post, Blogit.Post
 
     timestamps
