@@ -4,6 +4,7 @@ defmodule Blogit.Factory do
   alias Blogit.Role
   alias Blogit.User
   alias Blogit.Post
+  alias Blogit.Comment
 
   def factory(:role) do
     %Role{
@@ -28,6 +29,15 @@ defmodule Blogit.Factory do
       title: "Some Post",
       body: "And the body of some post",
       user: build(:user)
+    }
+  end
+
+  def factory(:comment) do
+    %Comment{
+      author: "Test User",
+      body: "This is a sample commment",
+      approved: false,
+      post: build(:post)
     }
   end
 end

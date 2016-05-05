@@ -6,6 +6,7 @@ defmodule Blogit.Post do
     field :body, :string
 
     belongs_to :user, Blogit.User
+    has_many :comments, Blogit.Comment
 
     timestamps
   end
