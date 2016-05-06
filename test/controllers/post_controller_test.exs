@@ -165,6 +165,14 @@ defmodule Blogit.PostControllerTest do
     refute conn.assigns[:author_or_admin]
   end
 
+  test "when logged in as different user, shows resource with autho flag to false",
+  %{conn: conn, user: user, other_user: other_user} do
+    post = build_post(user)
+    conn = login_user(conn, other_user) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    refute conn.assigns[:author_or_admin]
+  end
+
   defp login_user(conn, user) do
     post conn, session_path(conn, :create), user: %{username: user.username,
     password: user.password}
