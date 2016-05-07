@@ -34,7 +34,8 @@ defmodule Blogit.CommentChannel do
     case CommentHelper.approve(payload, socket) do
       {:ok, comment} ->
         broadcast socket, "APPROVED_COMMENT", Map.merge(payload, %{
-              insertedAt: comment.inserted_at, commentId: comment.id})
+              insertedAt: comment.inserted_at, commentId: comment.id,
+              approved: comment.approved})
         {:noreply, socket}
       {:error, _} ->
         {:noreply, socket}
@@ -49,14 +50,6 @@ defmodule Blogit.CommentChannel do
       {:error, _} ->
         {:noreply, socket}
     end
-  end
-
-  # This is invoked every time a notification is being broadcast
-  # to the client. The default implementation is just to push it
-  # downstream but one could filter or change the event.
-  def handle_out(event, payload, socket) do
-    push socket, event, payload
-    {:noreply, socket}
   end
 
   # Add authorization logic here as required.

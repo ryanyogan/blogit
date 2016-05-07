@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>cover/Elixir.Blogit.Role.html</title>
+</head><body style='background-color: white; color: black'>
+<pre>
+File generated from /Users/ryan/dev/blogit/web/models/role.ex by COVER 2016-05-07 at 15:07:10
+
+****************************************************************************
+
+        |  defmodule Blogit.Role do
+        |    use Blogit.Web, :model
+        |  
+    10..|    schema "roles" do
+        |      field :name, :string
+        |      field :admin, :boolean, default: false
+        |  
+        |      has_many :users, Blogit.User
+        |  
+        |      timestamps
+        |    end
+        |  
+        |    @required_fields ~w(name admin)
+        |    @optional_fields ~w()
+        |  
+        |    @doc """
+        |    Creates a changeset based on the `model` and `params`.
+        |  
+        |    If no params are provided, an invalid changeset is returned
+        |    with no validation performed.
+        |    """
+        |    def changeset(model, params \\ :empty) do
+        |      model
+        |      |&gt; cast(params, @required_fields, @optional_fields)
+        |    end
+        |  end
+</pre>
+</body>
+</html>

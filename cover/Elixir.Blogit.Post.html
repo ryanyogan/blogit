@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>cover/Elixir.Blogit.Post.html</title>
+</head><body style='background-color: white; color: black'>
+<pre>
+File generated from /Users/ryan/dev/blogit/web/models/post.ex by COVER 2016-05-07 at 15:07:10
+
+****************************************************************************
+
+        |  defmodule Blogit.Post do
+        |    use Blogit.Web, :model
+        |  
+    29..|    schema "posts" do
+        |      field :title, :string
+        |      field :body, :string
+        |  
+        |      belongs_to :user, Blogit.User
+        |      has_many :comments, Blogit.Comment
+        |  
+        |      timestamps
+        |    end
+        |  
+        |    @required_fields ~w(title body)
+        |    @optional_fields ~w()
+        |  
+        |    @doc """
+        |    Creates a changeset based on the `model` and `params`.
+        |  
+        |    If no params are provided, an invalid changeset is returned
+        |    with no validation performed.
+        |    """
+        |    def changeset(model, params \\ :empty) do
+        |      model
+        |      |&gt; cast(params, @required_fields, @optional_fields)
+        |      |&gt; strip_unsafe_body(params)
+        |    end
+        |  
+        |    defp strip_unsafe_body(model, %{"body" =&gt; nil}) do
+        |      model
+        |    end
+        |  
+        |    defp strip_unsafe_body(model, %{"body" =&gt; body}) do
+        |      {:safe, clean_body} = Phoenix.HTML.html_escape(body)
+        |      model |&gt; put_change(:body, clean_body)
+        |    end
+        |  
+        |    defp strip_unsafe_body(model, _) do
+        |      model
+        |    end
+        |  end
+</pre>
+</body>
+</html>

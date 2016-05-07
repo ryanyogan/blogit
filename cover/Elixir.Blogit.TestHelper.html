@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>cover/Elixir.Blogit.TestHelper.html</title>
+</head><body style='background-color: white; color: black'>
+<pre>
+File generated from /Users/ryan/dev/blogit/test/support/test_helper.ex by COVER 2016-05-07 at 15:07:10
+
+****************************************************************************
+
+        |  defmodule Blogit.TestHelper do
+        |    alias Blogit.Repo
+        |    alias Blogit.User
+        |    alias Blogit.Role
+        |    alias Blogit.Post
+        |  
+        |    import Ecto, only: [build_assoc: 2]
+        |  
+        |    def create_role(%{name: name, admin: admin}) do
+        |      Role.changeset(%Role{}, %{name: name, admin: admin})
+<font color=red>     0..|      |&gt; Repo.insert</font>
+        |    end
+        |  
+        |    def create_user(role, %{email: email, username: username, password: password,
+        |                           password_confirmation: password_confirmation}) do
+        |      role
+        |      |&gt; build_assoc(:users)
+        |      |&gt; User.changeset(%{email: email, username: username, password: password,
+        |                         password_confirmation: password_confirmation})
+<font color=red>     0..|      |&gt; Repo.insert</font>
+        |    end
+        |  
+        |    def create_post(user, %{title: title, body: body}) do
+        |      user
+        |      |&gt; build_assoc(:posts)
+        |      |&gt; Post.changeset(%{title: title, body: body})
+<font color=red>     0..|      |&gt; Repo.insert</font>
+        |    end
+        |  end
+</pre>
+</body>
+</html>
