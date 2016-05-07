@@ -52,7 +52,15 @@ exports.config = {
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/web\/static\/vendor/]
-    }
+    },
+      sass: {
+          options: {
+              includePaths: [
+                  'node_modules/foundation-sites/scss',
+                  'node_modules/motion-ui/src',
+              ]
+          }
+      }
   },
 
   modules: {
@@ -63,6 +71,10 @@ exports.config = {
 
   npm: {
     enabled: true,
-    whitelist: ["phoenix", "phoenix_html", "jquery"]
+      whitelist: ["phoenix", "phoenix_html", "jquery"],
+      globals: {
+          $: 'jquery',
+          jQuery: 'jquery'
+      }
   }
 };
