@@ -52,6 +52,11 @@ defmodule Blogit.CommentChannel do
     end
   end
 
+  def handle_out(event, payload, socket) do
+    push socket, event, payload
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true

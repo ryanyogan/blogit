@@ -1,4 +1,3 @@
-<input type="hidden" id="post-id" value="<%= @post.id %>">
 <%= if @conn.assigns[:author_or_admin] || @comment.approved do %>
   <div class="comment" id="comment-<%= @comment.id %>" data-comment-id="<%= @comment.id %>">
     <div class="row">
